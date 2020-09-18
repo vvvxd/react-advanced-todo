@@ -6,47 +6,79 @@ import closeSvg from '../../assets/img/close.svg'
 import './AddButtonList.scss'
 
 
-const AddList = ({colors}) => {
+const AddList = ({colors, onAdd}) => {
     const [state, setState] = useState(false);
     const [selectedColor, setSelected] = useState(colors[0].id);
+    const [inputValue, setInputValue] = useState('');
+
+    const onClose=()=>{
+        setState(false);
+        setInputValue('');
+        setSelected(colors[0].id)
+    }
+
+    const addList = () => {
+        if (!inputValue) {
+            alert('Введите название');
+            return ;
+        }
+        const color=colors.filter(c=>c.id === selectedColor)[0].name;;
+        onAdd({
+            "id": Math.random(),
+            "name": inputValue,
+             color
+        });
+        onClose();
+    }
 
     return (
         <div className='add-list'>
-            <List items={[
-                {
-                    className: 'list__add-button',
-                    icon:
-                        <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className='list__add-button'
-                        >
-                            <path
-                                d="M8 1V15"
-                                stroke="black"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <path
-                                d="M1 8H15"
-                                stroke="black"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"/>
-                        </svg>,
-                    name: 'Добавить стисок',
-                },
-            ]}
-                  onClick={() => setState(true)}
+            <List
+                items={[
+                    {
+                        className: 'list__add-button',
+                        icon:
+                            <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className='list__add-button'
+                            >
+                                <path
+                                    d="M8 1V15"
+                                    stroke="black"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M1 8H15"
+                                    stroke="black"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"/>
+                            </svg>,
+                        name: 'Добавить стисок',
+                    },
+                ]}
+                onClick={() => setState(true)}
             />
             {state &&
             <div className="add-list__popup">
-                <img onClick={()=>setState(false)} className="add-list__popup-close-btn" alt={"close dtn"} src={closeSvg}/>
-                <input type="text" placeholder={'Название списка'} className='field'/>
+                <img
+                    onClick={onClose}
+                    className="add-list__popup-close-btn" alt={"close dtn"}
+                    src={closeSvg}
+                />
+                <input
+                    value={inputValue}
+                    type="text"
+                    onChange={e => setInputValue(e.target.value)}
+                    placeholder={'Название списка'}
+                    className='field'
+                />
                 <div className="add-list__popup-colors">
                     {
                         colors.map((color) =>
@@ -59,7 +91,7 @@ const AddList = ({colors}) => {
                         )
                     }
                 </div>
-                <button className='button'>Добавить</button>
+                <button onClick={addList} className='button'>Добавить</button>
             </div>}
         </div>
     );
