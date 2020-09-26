@@ -37,13 +37,16 @@ const AddList = ({colors, onAdd}) => {
         axios.post('http://localhost:3001/lists',
             {name: inputValue, colorId: seletedColor})
             .then(({data}) => {
-            const color = colors.filter(c => c.id === seletedColor)[0].name;
-            const listObj = {...data, color: {name:color}}
-            onAdd(listObj);
-            onClose();
-        }).finally(()=>{
-            setIsLoading(false);
-        })
+                const color = colors.filter(c => c.id === seletedColor)[0].name;
+                const listObj = {...data, color: {name: color}}
+                onAdd(listObj);
+                onClose();
+            }).catch(() => {
+                alert('Ошибка при добавлении задачи');
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
     };
 
     return (
@@ -89,7 +92,6 @@ const AddList = ({colors, onAdd}) => {
                         alt="Close button"
                         className="add-list__popup-close-btn"
                     />
-
                     <input
                         value={inputValue}
                         onChange={e => setInputValue(e.target.value)}
@@ -97,7 +99,6 @@ const AddList = ({colors, onAdd}) => {
                         type="text"
                         placeholder="Название списка"
                     />
-
                     <div className="add-list__popup-colors">
                         {colors.map(color => (
                             <Badge
@@ -109,7 +110,7 @@ const AddList = ({colors, onAdd}) => {
                         ))}
                     </div>
                     <button onClick={addList} className="button">
-                        {isLoading ? 'Добавление':'Добавить'}
+                        {isLoading ? 'Добавление' : 'Добавить'}
                     </button>
                 </div>
             )}
